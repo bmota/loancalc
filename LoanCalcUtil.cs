@@ -11,7 +11,38 @@ namespace ScottyApps.LoanCalc
         public int YearCount { get; set; }
         public decimal YearInterestRate { get; set; }
         public PayLoanType PayLoan { get; set; }
-        public PayCycleType PayCycle { get; set; }
+
+        private PayCycleType _payCycle;
+        public PayCycleType PayCycle
+        {
+            get { return this._payCycle; }
+            set
+            {
+                this._payCycle = value;
+                _cycles = -1;
+            }
+        }
+        private int _cycles = -1;
+        public int Cycles
+        {
+            get
+            {
+                if (_cycles == -1)
+                {
+                    switch (this.PayCycle)
+                    {
+                        case PayCycleType.PerMonth:
+                            _cycles = this.YearCount * 12;
+                            break;
+                        case PayCycleType.PerQuarter:
+                            _cycles = this.YearCount * 12 / 3;
+                            break;
+                    }
+                }
+
+                return _cycles;
+            }
+        }
 
         public LoanCalcUtil(decimal loanBase, int years, decimal interestRate, PayLoanType payLoan, PayCycleType cycleType)
         {
@@ -54,27 +85,6 @@ namespace ScottyApps.LoanCalc
             return payBase + payInterest;
         }
 
-        private int _cycles = -1;
-        public int Cycles
-        {
-            get
-            {
-                if (_cycles == -1)
-                {
-                    switch (this.PayCycle)
-                    {
-                        case PayCycleType.PerMonth:
-                            _cycles = this.YearCount * 12;
-                            break;
-                        case PayCycleType.PerQuarter:
-                            _cycles = this.YearCount * 12 / 3;
-                            break;
-                    }
-                }
-
-                return _cycles;
-            }
-        }
 
         public decimal CalcTotalInterest()
         {
