@@ -77,12 +77,12 @@ namespace ScottyApps.LoanCalc
         public decimal CalcInterestForAvgLoanBase(int whichCycle)
         {
             var payBase = this.TotalLoanBase / this.Cycles;
-            var paidBase = (whichCycle - 1) * payBase;
+            var paidBase = whichCycle * payBase;
             var remainBase = this.TotalLoanBase - paidBase;
             var interestRate = PayCycle == PayCycleType.PerMonth ? YearInterestRate / 12 : YearInterestRate / 4;
             var payInterest = remainBase * interestRate;
 
-            return payBase + payInterest;
+            return payInterest;
         }
 
 

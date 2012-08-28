@@ -68,8 +68,8 @@ namespace ScottyApps.LoanCalc
             decimal cycleLoanBase = decimal.Parse(txtTotalLoanBase.Text.Trim()) / calcUtil.Cycles;
             for (int cycle = 0; cycle < calcUtil.Cycles; cycle++)
             {
-                cycleInterest = calcUtil.CalcInterestForAvgLoanBase(cycle + 1);
-                interestsDic.Add(cycle + 1, cycleInterest);
+                cycleInterest = calcUtil.CalcInterestForAvgLoanBase(cycle);
+                interestsDic.Add(cycle, cycleInterest);
 
                 string cyclePay = string.Format("第 {0} {1}: 本金（{2}），利息（{3}），共（{4}）元;{5}",
                                     cycle + 1,

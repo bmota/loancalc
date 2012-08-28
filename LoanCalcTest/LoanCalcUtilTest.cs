@@ -4,58 +4,45 @@ using System;
 
 namespace ScottyApps.LoanCalc.LoanCalcTest
 {
-    public class LoanCalcUtilTextContext : TestContext
-    {
-        public override void AddResultFile(string fileName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override void BeginTimer(string timerName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override System.Data.Common.DbConnection DataConnection
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public override System.Data.DataRow DataRow
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public override void EndTimer(string timerName)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override System.Collections.IDictionary Properties
-        {
-            get { throw new NotImplementedException(); }
-        }
-
-        public override void WriteLine(string format, params object[] args)
-        {
-            throw new NotImplementedException();
-        }
-
-        public LoanCalcUtil AvgLoanBaseInMthUtil { get; set; }
-        public LoanCalcUtil AvgLoanBaseInQtrUtil { get; set; }
-        public LoanCalcUtil AvgLoanBaseMthUtil { get; set; }
-        public LoanCalcUtil AvgLoanBaseQtrUtil { get; set; }
-    }
-
     [TestClass()]
     public class LoanCalcUtilTest
     {
-
-
-        public LoanCalcUtilTextContext TestContext
+        private TestContext testContextInstance;
+        /// <summary>
+        ///Gets or sets the test context which provides
+        ///information about and functionality for the current test run.
+        ///</summary>
+        public TestContext TestContext
         {
-            get;
-            set;
+            get
+            {
+                return testContextInstance;
+            }
+            set
+            {
+                testContextInstance = value;
+            }
+        }
+
+        LoanCalcUtil avgLoanBaseInMthUtil;
+        LoanCalcUtil avgLoanBaseInQtrUtil;
+        LoanCalcUtil avgLoanBaseMthUtil;
+        LoanCalcUtil avgLoanBaseQtrUtil;
+        public LoanCalcUtilTest()
+        {
+            Decimal loanBase = 200000M;
+            int years = 10;
+            Decimal interestRate = 0.0558M;
+
+            avgLoanBaseInMthUtil = new LoanCalcUtil(loanBase, years, interestRate,
+                PayLoanType.AvgLoanBaseAndInterests, PayCycleType.PerMonth);
+            avgLoanBaseInQtrUtil = new LoanCalcUtil(loanBase, years, interestRate,
+                PayLoanType.AvgLoanBaseAndInterests, PayCycleType.PerQuarter);
+            avgLoanBaseMthUtil = new LoanCalcUtil(loanBase, years, interestRate,
+                PayLoanType.AvgLoanBase, PayCycleType.PerMonth);
+            avgLoanBaseQtrUtil = new LoanCalcUtil(loanBase, years, interestRate,
+                PayLoanType.AvgLoanBase, PayCycleType.PerQuarter);
+
         }
 
         #region 附加测试特性
@@ -63,22 +50,10 @@ namespace ScottyApps.LoanCalc.LoanCalcTest
         //编写测试时，还可使用以下特性:
         //
         //使用 ClassInitialize 在运行类中的第一个测试前先运行代码
-        [ClassInitialize()]
-        public static void MyClassInitialize(LoanCalcUtilTextContext context)
-        {
-            Decimal loanBase = 200000M;
-            int years = 10;
-            Decimal interestRate = 0.0558M;
-
-            context.AvgLoanBaseInMthUtil = new LoanCalcUtil(loanBase, years, interestRate,
-                PayLoanType.AvgLoanBaseAndInterests, PayCycleType.PerMonth);
-            context.AvgLoanBaseInQtrUtil = new LoanCalcUtil(loanBase, years, interestRate,
-                PayLoanType.AvgLoanBaseAndInterests, PayCycleType.PerQuarter);
-            context.AvgLoanBaseMthUtil = new LoanCalcUtil(loanBase, years, interestRate,
-                PayLoanType.AvgLoanBase, PayCycleType.PerMonth);
-            context.AvgLoanBaseQtrUtil = new LoanCalcUtil(loanBase, years, interestRate,
-                PayLoanType.AvgLoanBase, PayCycleType.PerQuarter);
-        }
+        //[ClassInitialize()]
+        //public static void MyClassInitialize(TestContext testContext)
+        //{
+        //}
         //
         //使用 ClassCleanup 在运行完类中的所有测试后再运行代码
         //[ClassCleanup()]
@@ -104,12 +79,12 @@ namespace ScottyApps.LoanCalc.LoanCalcTest
         [TestMethod()]
         public void CalcInterestTest()
         {
-            //int whichCycle = 0; // TODO: 初始化为适当的值
-            //Decimal expected = 2790M;
-            //Decimal actual;
-            //actual = TestContext..CalcInterest(whichCycle);
-            //Assert.AreEqual(expected, actual);
-            //Assert.Inconclusive("验证此测试方法的正确性。");
+            int whichCycle = 0; // TODO: 初始化为适当的值
+            Decimal expected = 2790M;
+            Decimal actual;
+            actual = avgLoanBaseQtrUtil.CalcInterest(whichCycle);
+            Assert.AreEqual(expected, actual);
+            Assert.Inconclusive("验证此测试方法的正确性。");
         }
 
         [TestMethod()]
