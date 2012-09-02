@@ -43,6 +43,22 @@ namespace ScottyApps.LoanCalc
                 return _cycles;
             }
         }
+        //private decimal _cycleInterestRatio = 0.0M;
+        public decimal CycleInterestRatio
+        {
+            get
+            {
+                //if (_cycleInterestRatio == 0.0M)
+                //{
+                return
+                    //_cycleInterestRatio =
+                        (PayCycle == PayCycleType.PerMonth)
+                            ? YearInterestRate / 12
+                            : YearInterestRate / 4;
+                //}
+                //return _cycleInterestRatio;
+            }
+        }
 
         public LoanCalcUtil(decimal loanBase, int years, decimal interestRate, PayLoanType payLoan, PayCycleType cycleType)
         {
@@ -53,44 +69,40 @@ namespace ScottyApps.LoanCalc
             this.PayCycle = cycleType;
         }
 
-        public decimal CalcInterest(int whichCycle)
-        {
-            // TODO should validate if cycle is in range (less than total cycles)
-            switch (this.PayLoan)
-            {
-                default:
-                    return 0.0M;
-                case PayLoanType.AvgLoanBase:
-                    return CalcInterestForAvgLoanBase(whichCycle);
-                case PayLoanType.AvgLoanBaseAndInterests:
-                    return CalcInterestForAvgLoanBaseAndInterests();
-            }
-        }
-
-        public decimal CalcInterestForAvgLoanBaseAndInterests()
-        {
-            var totalInterests = CalcTotalInterest();
-            var totalMoney = this.TotalLoanBase + totalInterests;
-
-            return totalMoney / Cycles;
-        }
         public decimal CalcInterestForAvgLoanBase(int whichCycle)
         {
             var payBase = this.TotalLoanBase / this.Cycles;
             var paidBase = whichCycle * payBase;
             var remainBase = this.TotalLoanBase - paidBase;
-            var interestRate = PayCycle == PayCycleType.PerMonth ? YearInterestRate / 12 : YearInterestRate / 4;
-            var payInterest = remainBase * interestRate;
+            var payInterest = remainBase * CycleInterestRatio;
 
             return payInterest;
         }
 
-
-        public decimal CalcTotalInterest()
+        public double CalcCyclePayForAvgLoanBaseAndInterests()
         {
-            return
-                this.TotalLoanBase * this.YearInterestRate * this.YearCount;
+            // NOTE based on below algorithm (http://baike.baidu.com/view/1180521.htm#3):
+            // 等额本息还款公式推导 设贷款总额为A，银行月利率为β，总期数为m（个月），月还款额设为X，
+            // 则各个月所欠银行贷款为：
+            // 第一个月A(1+β)-X]
+            // 第二个月[A(1+β)-X](1+β)-X = A(1+β)^2-X[1+(1+β)]
+            // 第三个月{[A(1+β)-X](1+β)-X}(1+β)-X = A(1+β)^3-X[1+(1+β)+(1+β)^2]
+            // …
+            // 由此可得第n个月后所欠银行贷款为：
+            // A(1+β)^n-X[1+(1+β)+(1+β)^2+…+(1+β)^(n-1)] = A(1+β)^n-X[(1+β)^n-1]/β
+            // 由于还款总期数为m，也即第m月刚好还完银行所有贷款，因此有：
+            // A(1+β)^m-X[(1+β)^m-1]/β = 0
+            // 由此求得：
+            // X = Aβ(1+β)^m/[(1+β)^m-1]
+            double cyclePay = 0;
+
+            var temp = System.Math.Pow((double)(1 + this.CycleInterestRatio), (double)Cycles);
+            cyclePay = ((double)this.TotalLoanBase) * ((double)this.CycleInterestRatio) * temp / (temp - 1);
+
+            
+            return cyclePay;
         }
+
     }
 
     public enum PayLoanType

@@ -77,31 +77,14 @@ namespace ScottyApps.LoanCalc.LoanCalcTest
 
 
         [TestMethod()]
-        public void CalcInterestTest()
+        public void CalcInterestForAvgLoanBaseTest()
         {
             int whichCycle = 0; // TODO: 初始化为适当的值
             Decimal expected = 2790M;
             Decimal actual;
-            actual = avgLoanBaseQtrUtil.CalcInterest(whichCycle);
+            actual = avgLoanBaseQtrUtil.CalcInterestForAvgLoanBase(whichCycle);
             Assert.AreEqual(expected, actual);
             Assert.Inconclusive("验证此测试方法的正确性。");
-        }
-
-        [TestMethod()]
-        public void CalcInterestForAvgLoanBaseTest()
-        {
-            //Decimal loanBase = new Decimal(); // TODO: 初始化为适当的值
-            //int years = 0; // TODO: 初始化为适当的值
-            //Decimal interestRate = new Decimal(); // TODO: 初始化为适当的值
-            //PayLoanType payLoan = new PayLoanType(); // TODO: 初始化为适当的值
-            //PayCycleType cycleType = new PayCycleType(); // TODO: 初始化为适当的值
-            //LoanCalcUtil target = new LoanCalcUtil(loanBase, years, interestRate, payLoan, cycleType); // TODO: 初始化为适当的值
-            //int whichCycle = 0; // TODO: 初始化为适当的值
-            //Decimal expected = new Decimal(); // TODO: 初始化为适当的值
-            //Decimal actual;
-            //actual = target.CalcInterestForAvgLoanBase(whichCycle);
-            //Assert.AreEqual(expected, actual);
-            //Assert.Inconclusive("验证此测试方法的正确性。");
         }
 
         [TestMethod()]
